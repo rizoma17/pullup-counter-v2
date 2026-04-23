@@ -37,6 +37,7 @@ export const usePullupStore = create<PullupStore>((set, get) => ({
       totalReps: state.totalReps + count,
       todayReps: state.lastTrackedDate === currentDate ? state.todayReps + count : count,
       lastTrackedDate: currentDate,
+      lastSavedAt: Date.now(),
       dailyLog: {
         ...state.dailyLog,
         [currentDate]: {
@@ -72,6 +73,7 @@ export const usePullupStore = create<PullupStore>((set, get) => ({
       ...state,
       totalReps: Math.max(state.totalReps - 1, 0),
       todayReps: Math.max(state.todayReps - 1, 0),
+      lastSavedAt: Date.now(),
       dailyLog: {
         ...state.dailyLog,
         [currentDate]: {
@@ -94,14 +96,19 @@ export const usePullupStore = create<PullupStore>((set, get) => ({
   },
 
   importData: (payload) => {
-    saveState(payload);
-    set(payload);
+    const nextState = {
+      ...payload,
+      lastSavedAt: Date.now()
+    };
+    saveState(nextState);
+    set(nextState);
   },
 
   setSensorMode: (mode) => {
     const state = get();
     const nextState: AppState = {
       ...state,
+      lastSavedAt: Date.now(),
       settings: {
         ...state.settings,
         sensorMode: mode
@@ -116,6 +123,7 @@ export const usePullupStore = create<PullupStore>((set, get) => ({
     const state = get();
     const nextState: AppState = {
       ...state,
+      lastSavedAt: Date.now(),
       settings: {
         ...state.settings,
         dailyGoal: goal
@@ -129,6 +137,7 @@ export const usePullupStore = create<PullupStore>((set, get) => ({
     const state = get();
     const nextState: AppState = {
       ...state,
+      lastSavedAt: Date.now(),
       settings: {
         ...state.settings,
         vibrationEnabled: enabled
@@ -142,6 +151,7 @@ export const usePullupStore = create<PullupStore>((set, get) => ({
     const state = get();
     const nextState: AppState = {
       ...state,
+      lastSavedAt: Date.now(),
       settings: {
         ...state.settings,
         soundEnabled: enabled

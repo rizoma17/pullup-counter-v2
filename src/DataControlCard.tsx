@@ -11,6 +11,7 @@ export function DataControlCard() {
     totalReps: s.totalReps,
     todayReps: s.todayReps,
     lastTrackedDate: s.lastTrackedDate,
+    lastSavedAt: s.lastSavedAt,
     dailyLog: s.dailyLog,
     settings: s.settings
   }));
@@ -19,7 +20,7 @@ export function DataControlCard() {
 
   return (
     <div className="space-y-3 rounded-3xl bg-white p-4 shadow-soft">
-      <h2 className="text-lg font-semibold text-slate-900">Data Control</h2>
+      <h2 className="text-lg font-semibold text-slate-900">資料管理</h2>
 
       <div className="grid grid-cols-2 gap-3">
         <button
@@ -27,10 +28,10 @@ export function DataControlCard() {
           className="h-12 rounded-2xl bg-slate-900 font-medium text-white"
           onClick={() => {
             downloadJson('pullup-data.json', state);
-            pushToast({ title: 'Data exported', tone: 'success' });
+            pushToast({ title: '已匯出資料備份', tone: 'success' });
           }}
         >
-          Export JSON
+          匯出 JSON
         </button>
 
         <button
@@ -38,7 +39,7 @@ export function DataControlCard() {
           className="h-12 rounded-2xl bg-slate-100 font-medium text-slate-700"
           onClick={() => inputRef.current?.click()}
         >
-          Import JSON
+          匯入 JSON
         </button>
       </div>
 
@@ -53,9 +54,9 @@ export function DataControlCard() {
           try {
             const payload = await readJsonFile(file);
             importData(payload);
-            pushToast({ title: 'Import successful', tone: 'success' });
+            pushToast({ title: '匯入成功，資料已寫入此裝置', tone: 'success' });
           } catch {
-            pushToast({ title: 'Invalid JSON file', tone: 'error' });
+            pushToast({ title: '檔案格式不正確', tone: 'error' });
           }
           e.currentTarget.value = '';
         }}
@@ -65,13 +66,13 @@ export function DataControlCard() {
         type="button"
         className="h-12 w-full rounded-2xl border border-red-200 text-red-600"
         onClick={async () => {
-          const confirmed = window.confirm('Reset all local data and session history?');
+          const confirmed = window.confirm('要清除這台裝置上的所有紀錄嗎？');
           if (!confirmed) return;
           await resetAll();
-          pushToast({ title: 'All local data cleared', tone: 'success' });
+          pushToast({ title: '本機資料已清除', tone: 'success' });
         }}
       >
-        Reset All Data
+        清除全部資料
       </button>
     </div>
   );

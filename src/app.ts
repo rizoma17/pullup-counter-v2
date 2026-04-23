@@ -32,12 +32,13 @@ export type AppState = {
   totalReps: number;
   todayReps: number;
   lastTrackedDate: string;
+  lastSavedAt: number;
   dailyLog: Record<string, DailyRecord>;
   settings: AppSettings;
 };
 
 export type LevelInfo = {
-  label: 'Starter' | 'Rookie' | 'Intermediate' | 'Advanced' | 'Beast' | 'Elite';
+  label: '新手' | '入門' | '進階' | '高手' | '猛者' | '菁英';
   stage: number;
 };
 

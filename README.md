@@ -1,33 +1,9 @@
-# Pull-Up Counter
+# Pull-Up Counter (Easy Upload Version)
 
-A gamified, mobile-first pull-up counter built with Vite + React + TypeScript.
+This version keeps all app source files directly under `src/` to make GitHub web upload less error-prone.
 
-## Features
-
-- Fast manual rep logging
-- Avatar evolution based on cumulative reps
-- Weekly chart and 28-day consistency heatmap
-- Local persistence via localStorage
-- Session history via IndexedDB
-- JSON export/import
-- PWA-ready setup
-- Placeholder architecture for future camera-based counting
-
-## Run locally
-
-```bash
-npm install
-npm run dev
-```
-
-## Build
-
-```bash
-npm run build
-npm run preview
-```
-
-## Notes
-
-- This project is optimized for a manual-first MVP.
-- Camera-based auto counting is intentionally not enabled by default.
+## Deploy
+1. Upload all files and folders in this project to a GitHub repository root.
+2. Confirm the repo root shows: `src/`, `public/`, `package.json`, `vite.config.ts`, `tsconfig.app.json`.
+3. Import the repo into Vercel.
+4. Keep Root Directory as `./`.

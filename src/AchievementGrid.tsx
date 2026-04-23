@@ -3,7 +3,7 @@ import type { Achievement } from './app';
 export function AchievementGrid({ achievements }: { achievements: Achievement[] }) {
   return (
     <div className="rounded-3xl bg-white p-4 shadow-soft">
-      <h2 className="mb-3 text-lg font-semibold text-slate-900">Achievements</h2>
+      <h2 className="mb-3 text-lg font-semibold text-slate-900">成就徽章</h2>
       <div className="grid grid-cols-2 gap-3">
         {achievements.map((item) => (
           <div

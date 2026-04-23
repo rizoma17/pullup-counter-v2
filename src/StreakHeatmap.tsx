@@ -18,8 +18,8 @@ export function StreakHeatmap({ dailyLog, days = 28 }: Props) {
   return (
     <div className="rounded-3xl bg-white p-4 shadow-soft">
       <div className="mb-3 flex items-center justify-between">
-        <h2 className="text-lg font-semibold text-slate-900">Consistency</h2>
-        <p className="text-xs text-slate-500">Last {days} days</p>
+        <h2 className="text-lg font-semibold text-slate-900">訓練熱度</h2>
+        <p className="text-xs text-slate-500">最近 {days} 天</p>
       </div>
 
       <div className="grid grid-cols-7 gap-2">
@@ -27,7 +27,7 @@ export function StreakHeatmap({ dailyLog, days = 28 }: Props) {
           const reps = dailyLog[date]?.reps ?? 0;
           return (
             <div key={date} className="flex flex-col items-center gap-1">
-              <div title={`${date}: ${reps} reps`} className={`h-8 w-8 rounded-xl ${getIntensity(reps)}`} />
+              <div title={`${date}: ${reps} 下`} className={`h-8 w-8 rounded-xl ${getIntensity(reps)}`} />
               <span className="text-[10px] text-slate-400">{date.slice(8)}</span>
             </div>
           );
@@ -35,12 +35,12 @@ export function StreakHeatmap({ dailyLog, days = 28 }: Props) {
       </div>
 
       <div className="mt-3 flex items-center gap-2 text-xs text-slate-500">
-        <span>Less</span>
+        <span>少</span>
         <div className="h-3 w-3 rounded bg-slate-100" />
         <div className="h-3 w-3 rounded bg-slate-400" />
         <div className="h-3 w-3 rounded bg-slate-700" />
         <div className="h-3 w-3 rounded bg-slate-900" />
-        <span>More</span>
+        <span>多</span>
       </div>
     </div>
   );

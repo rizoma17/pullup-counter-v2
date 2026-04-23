@@ -8,6 +8,7 @@ export function createInitialState(): AppState {
     totalReps: 0,
     todayReps: 0,
     lastTrackedDate: formatDate(new Date()),
+    lastSavedAt: Date.now(),
     dailyLog: {},
     settings: {
       dailyGoal: 30,
@@ -22,7 +23,19 @@ export function loadState(): AppState {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return createInitialState();
-    return JSON.parse(raw) as AppState;
+
+    const parsed = JSON.parse(raw) as Partial<AppState>;
+    const initial = createInitialState();
+
+    return {
+      ...initial,
+      ...parsed,
+      settings: {
+        ...initial.settings,
+        ...parsed.settings
+      },
+      lastSavedAt: parsed.lastSavedAt ?? Date.now()
+    };
   } catch {
     return createInitialState();
   }

@@ -19,7 +19,7 @@ export function CounterPanel() {
             className="h-14 rounded-2xl bg-slate-900 text-lg font-semibold text-white"
             onClick={async () => {
               await addReps(n);
-              pushToast({ title: `Added ${n} reps`, tone: 'success' });
+              pushToast({ title: `已新增 ${n} 下，並儲存到此裝置`, tone: 'success' });
             }}
           >
             +{n}
@@ -32,7 +32,7 @@ export function CounterPanel() {
           inputMode="numeric"
           value={customInput}
           onChange={(e) => setCustomInput(e.target.value.replace(/[^0-9]/g, ''))}
-          placeholder="Custom reps"
+          placeholder="自訂次數"
           className="h-12 rounded-2xl border border-slate-200 px-4 outline-none"
         />
         <button
@@ -43,7 +43,7 @@ export function CounterPanel() {
             if (!value) return;
             await addReps(value);
             setCustomInput('');
-            pushToast({ title: `Added ${value} reps`, tone: 'success' });
+            pushToast({ title: `已新增 ${value} 下，並儲存到此裝置`, tone: 'success' });
           }}
         >
           <Plus className="h-4 w-4" />
@@ -53,7 +53,7 @@ export function CounterPanel() {
           className="inline-flex h-12 w-12 items-center justify-center rounded-2xl border border-slate-200"
           onClick={() => {
             removeRep();
-            pushToast({ title: 'Removed 1 rep', tone: 'default' });
+            pushToast({ title: '已減少 1 下，並更新儲存資料', tone: 'default' });
           }}
         >
           <Minus className="h-4 w-4" />

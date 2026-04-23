@@ -21,7 +21,7 @@ export function getPastNDays(n: number): string[] {
 
 export function getWeekdayLabel(dateString: string): string {
   const d = new Date(dateString);
-  return ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][d.getDay()];
+  return ['日', '一', '二', '三', '四', '五', '六'][d.getDay()];
 }
 
 export function getStreak(dailyLog: Record<string, { reps: number }>): number {

@@ -15,12 +15,12 @@ export function SettingsPanel() {
 
   return (
     <div className="space-y-4 rounded-3xl bg-white p-4 shadow-soft">
-      <h2 className="text-lg font-semibold text-slate-900">Settings</h2>
+      <h2 className="text-lg font-semibold text-slate-900">設定</h2>
 
       <div>
         <div className="mb-2 flex items-center justify-between">
-          <label className="block text-sm text-slate-600">Daily Goal</label>
-          <span className="text-xs text-slate-400">Recommended 20–50</span>
+          <label className="block text-sm text-slate-600">每日目標</label>
+          <span className="text-xs text-slate-400">建議 20–50 下</span>
         </div>
         <div className="grid grid-cols-[1fr_auto] gap-2">
           <input
@@ -34,23 +34,23 @@ export function SettingsPanel() {
           <button
             type="button"
             className="h-12 rounded-2xl bg-slate-900 px-4 text-sm font-medium text-white"
-            onClick={() => pushToast({ title: `Daily goal saved: ${dailyGoal} reps`, tone: 'success' })}
+            onClick={() => pushToast({ title: `每日目標已儲存：${dailyGoal} 下`, tone: 'success' })}
           >
-            Save
+            儲存
           </button>
         </div>
       </div>
 
       <div className="flex items-center justify-between rounded-2xl bg-slate-50 p-3">
         <div>
-          <p className="font-medium text-slate-900">Vibration</p>
-          <p className="text-xs text-slate-500">Haptic feedback on rep logging</p>
+          <p className="font-medium text-slate-900">震動回饋</p>
+          <p className="text-xs text-slate-500">每次記錄時給予觸覺回饋</p>
         </div>
         <button
           type="button"
           onClick={() => {
             setVibrationEnabled(!vibrationEnabled);
-            pushToast({ title: `Vibration ${!vibrationEnabled ? 'enabled' : 'disabled'}`, tone: 'success' });
+            pushToast({ title: `震動回饋已${!vibrationEnabled ? '開啟' : '關閉'}`, tone: 'success' });
           }}
           className={`relative h-7 w-12 rounded-full transition ${vibrationEnabled ? 'bg-slate-900' : 'bg-slate-300'}`}
         >
@@ -60,14 +60,14 @@ export function SettingsPanel() {
 
       <div className="flex items-center justify-between rounded-2xl bg-slate-50 p-3">
         <div>
-          <p className="font-medium text-slate-900">Sound</p>
-          <p className="text-xs text-slate-500">Reserved for future audio cue support</p>
+          <p className="font-medium text-slate-900">音效提示</p>
+          <p className="text-xs text-slate-500">目前保留作未來功能使用</p>
         </div>
         <button
           type="button"
           onClick={() => {
             setSoundEnabled(!soundEnabled);
-            pushToast({ title: `Sound ${!soundEnabled ? 'enabled' : 'disabled'}`, tone: 'success' });
+            pushToast({ title: `音效提示已${!soundEnabled ? '開啟' : '關閉'}`, tone: 'success' });
           }}
           className={`relative h-7 w-12 rounded-full transition ${soundEnabled ? 'bg-slate-900' : 'bg-slate-300'}`}
         >
@@ -76,7 +76,7 @@ export function SettingsPanel() {
       </div>
 
       <div>
-        <label className="mb-2 block text-sm text-slate-600">Input Mode</label>
+        <label className="mb-2 block text-sm text-slate-600">輸入模式</label>
         <div className="grid grid-cols-2 gap-2">
           {['manual', 'camera'].map((mode) => (
             <button
@@ -84,13 +84,13 @@ export function SettingsPanel() {
               type="button"
               onClick={() => {
                 setSensorMode(mode as 'manual' | 'camera');
-                pushToast({ title: `Input mode: ${mode}`, tone: 'success' });
+                pushToast({ title: `目前模式：${mode === 'manual' ? '手動' : '相機'}`, tone: 'success' });
               }}
               className={`h-12 rounded-2xl text-sm font-medium ${
                 sensorMode === mode ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-600'
               }`}
             >
-              {mode === 'manual' ? 'Manual' : 'Camera'}
+              {mode === 'manual' ? '手動' : '相機'}
             </button>
           ))}
         </div>
