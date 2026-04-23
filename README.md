@@ -7,3 +7,4 @@ This version keeps all app source files directly under `src/` to make GitHub web
 2. Confirm the repo root shows: `src/`, `public/`, `package.json`, `vite.config.ts`, `tsconfig.app.json`.
 3. Import the repo into Vercel.
 4. Keep Root Directory as `./`.
+5. 
