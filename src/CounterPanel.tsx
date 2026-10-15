@@ -29,11 +29,12 @@ export function CounterPanel() {
 
       <div className="mt-3 grid grid-cols-[1fr_auto_auto] gap-2">
         <input
+          aria-label="自訂次數"
           inputMode="numeric"
           value={customInput}
           onChange={(e) => setCustomInput(e.target.value.replace(/[^0-9]/g, ''))}
           placeholder="自訂次數"
-          className="h-12 rounded-2xl border border-slate-200 px-4 outline-none"
+          className="h-12 min-w-0 rounded-2xl border border-slate-200 px-4 outline-none"
         />
         <button
           type="button"
@@ -46,7 +47,7 @@ export function CounterPanel() {
             pushToast({ title: `已新增 ${value} 下，並儲存到此裝置`, tone: 'success' });
           }}
         >
-          <Plus className="h-4 w-4" />
+          <Plus aria-label="新增自訂次數" className="h-4 w-4" />
         </button>
         <button
           type="button"
@@ -56,7 +57,7 @@ export function CounterPanel() {
             pushToast({ title: '已減少 1 下，並更新儲存資料', tone: 'default' });
           }}
         >
-          <Minus className="h-4 w-4" />
+          <Minus aria-label="減少一下" className="h-4 w-4" />
         </button>
       </div>
     </div>
