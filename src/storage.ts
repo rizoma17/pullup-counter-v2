@@ -24,6 +24,8 @@ export function normalizeState(state: Partial<AppState>): AppState {
   return {
     ...initial,
     ...state,
+    todayReps: state.dailyLog?.[initial.lastTrackedDate]?.reps ?? 0,
+    lastTrackedDate: initial.lastTrackedDate,
     // Retain supported settings when loading older saved data or JSON backups.
     settings: {
       dailyGoal: state.settings?.dailyGoal ?? initial.settings.dailyGoal,

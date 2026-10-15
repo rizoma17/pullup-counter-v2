@@ -8,6 +8,8 @@ import { addSession, clearSessions } from './db';
 type PullupStore = AppState & {
   addReps: (count: number) => Promise<void>;
   removeRep: () => void;
+  syncToday: () => void;
+  resetToday: () => void;
   resetAll: () => Promise<void>;
   importData: (payload: AppState) => void;
   setDailyGoal: (goal: number) => void;
@@ -34,7 +36,7 @@ export const usePullupStore = create<PullupStore>((set, get) => ({
     const nextState: AppState = {
       ...state,
       totalReps: state.totalReps + count,
-      todayReps: state.lastTrackedDate === currentDate ? state.todayReps + count : count,
+      todayReps: (existing?.reps ?? 0) + count,
       lastTrackedDate: currentDate,
       lastSavedAt: Date.now(),
       dailyLog: {
@@ -71,7 +73,8 @@ export const usePullupStore = create<PullupStore>((set, get) => ({
     const nextState: AppState = {
       ...state,
       totalReps: Math.max(state.totalReps - 1, 0),
-      todayReps: Math.max(state.todayReps - 1, 0),
+      todayReps: nextReps,
+      lastTrackedDate: currentDate,
       lastSavedAt: Date.now(),
       dailyLog: {
         ...state.dailyLog,
@@ -83,6 +86,32 @@ export const usePullupStore = create<PullupStore>((set, get) => ({
       }
     };
 
+    saveState(nextState);
+    set(nextState);
+  },
+
+  syncToday: () => {
+    const state = get();
+    const currentDate = today();
+    const todayReps = state.dailyLog[currentDate]?.reps ?? 0;
+    if (state.lastTrackedDate === currentDate && state.todayReps === todayReps) return;
+    const nextState = { ...state, todayReps, lastTrackedDate: currentDate };
+    saveState(nextState);
+    set(nextState);
+  },
+
+  resetToday: () => {
+    const state = get();
+    const currentDate = today();
+    // Keep a zero aggregate as the authoritative correction, preserving the audit history.
+    const nextState = {
+      ...state,
+      totalReps: Math.max(0, state.totalReps - (state.dailyLog[currentDate]?.reps ?? 0)),
+      todayReps: 0,
+      lastTrackedDate: currentDate,
+      lastSavedAt: Date.now(),
+      dailyLog: { ...state.dailyLog, [currentDate]: { date: currentDate, reps: 0, sessions: 0 } }
+    };
     saveState(nextState);
     set(nextState);
   },
