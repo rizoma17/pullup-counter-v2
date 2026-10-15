@@ -1,4 +1,4 @@
-import { Activity, Dumbbell, Flame, Trophy, CheckCircle2 } from 'lucide-react';
+import { Activity, Dumbbell, Flame, Trophy, CheckCircle2, RotateCcw } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { AvatarEvolution } from './AvatarEvolution';
 import { WeeklyTrendChart } from './WeeklyTrendChart';
@@ -78,12 +78,12 @@ export default function App() {
         {tab === 'counter' && <>
           <AvatarEvolution stage={level.stage} label={level.label} totalReps={totalReps} />
           <section className="rounded-3xl bg-white p-4 shadow-soft" aria-label="今日紀錄">
-            <div className="flex items-center justify-between"><h2 className="text-sm text-slate-500">今日 · {currentDate.replace(/-/g, '/')}</h2><button className="min-h-10 text-xs text-slate-500" onClick={() => {
+            <div className="flex items-center justify-between"><h2 className="text-sm text-slate-500">今日 · {currentDate.replace(/-/g, '/')}</h2><button type="button" className="inline-flex min-h-11 shrink-0 items-center justify-center gap-1.5 rounded-xl border border-rose-200 bg-rose-50 px-3 py-2 text-sm font-medium text-rose-700 transition-colors hover:bg-rose-100 active:bg-rose-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-400 focus-visible:ring-offset-2" onClick={() => {
               if (window.confirm('將今天的次數歸零？其他日期的紀錄會保留，累積次數也會同步扣除今天的次數。')) {
                 resetToday();
                 pushToast({ title: '今日已歸零，其他日期紀錄已保留', tone: 'success' });
               }
-            }}>今日歸零</button></div>
+            }}><RotateCcw aria-hidden="true" className="h-4 w-4" />今日歸零</button></div>
             <div className="mb-3 flex items-baseline gap-2"><strong data-testid="today-reps" className="text-4xl tabular-nums">{todayReps}</strong><span className="text-sm text-slate-500">下 / 目標 {dailyGoal} 下</span></div>
             <div className="h-2 overflow-hidden rounded-full bg-slate-100"><div className="h-full rounded-full bg-blue-500 transition-all" style={{ width: `${Math.min(100, todayReps / Math.max(1, dailyGoal) * 100)}%` }} /></div>
           </section>
