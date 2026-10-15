@@ -13,7 +13,6 @@ import { InstallPromptCard } from './InstallPromptCard';
 import { SettingsPanel } from './SettingsPanel';
 import { BottomActionBar } from './BottomActionBar';
 import { KPICard } from './KPICard';
-import { SensorRoadmapCard } from './SensorRoadmapCard';
 import { getAchievements } from './achievementRules';
 import { getWeeklyChartData } from './selectors';
 import { usePullupStore } from './store';
@@ -36,7 +35,7 @@ export default function App() {
   const lastSavedAt = usePullupStore((s) => s.lastSavedAt);
   const addReps = usePullupStore((s) => s.addReps);
   const pushToast = useToast((s) => s.pushToast);
-  const [tab, setTab] = useState<'counter' | 'analytics' | 'awards' | 'sensor' | 'settings'>('counter');
+  const [tab, setTab] = useState<'counter' | 'analytics' | 'awards' | 'settings'>('counter');
 
   const weeklyData = useMemo(() => getWeeklyChartData(dailyLog), [dailyLog]);
   const weeklyTotal = weeklyData.reduce((sum, item) => sum + item.reps, 0);
@@ -78,12 +77,11 @@ export default function App() {
 
         <DailyProgressCard todayReps={todayReps} dailyGoal={dailyGoal} />
 
-        <div className="grid h-12 grid-cols-5 rounded-2xl bg-white p-1 shadow-soft">
+        <div className="grid h-12 grid-cols-4 rounded-2xl bg-white p-1 shadow-soft">
           {[
             ['counter', '計數'],
             ['analytics', '分析'],
             ['awards', '成就'],
-            ['sensor', '感測'],
             ['settings', '設定']
           ].map(([item, label]) => (
             <button
@@ -106,7 +104,6 @@ export default function App() {
           </div>
         )}
         {tab === 'awards' && <AchievementGrid achievements={achievements} />}
-        {tab === 'sensor' && <SensorRoadmapCard />}
         {tab === 'settings' && (
           <div className="space-y-4">
             <SettingsPanel />

@@ -1,16 +1,15 @@
 import { create } from 'zustand';
-import type { AppState, SensorMode, TrainingSession } from './app';
+import type { AppState } from './app';
 import { formatDate } from './dates';
-import { createInitialState, loadState, saveState } from './storage';
+import { createInitialState, loadState, normalizeState, saveState } from './storage';
 import { vibrate } from './vibration';
 import { addSession, clearSessions } from './db';
 
 type PullupStore = AppState & {
-  addReps: (count: number, source?: TrainingSession['source']) => Promise<void>;
+  addReps: (count: number) => Promise<void>;
   removeRep: () => void;
   resetAll: () => Promise<void>;
   importData: (payload: AppState) => void;
-  setSensorMode: (mode: SensorMode) => void;
   setDailyGoal: (goal: number) => void;
   setVibrationEnabled: (enabled: boolean) => void;
   setSoundEnabled: (enabled: boolean) => void;
@@ -21,7 +20,7 @@ const today = () => formatDate(new Date());
 export const usePullupStore = create<PullupStore>((set, get) => ({
   ...loadState(),
 
-  addReps: async (count, source = 'manual') => {
+  addReps: async (count) => {
     if (count <= 0) return;
 
     const state = get();
@@ -56,7 +55,7 @@ export const usePullupStore = create<PullupStore>((set, get) => ({
       date: currentDate,
       reps: count,
       createdAt: Date.now(),
-      source
+      source: 'manual'
     });
   },
 
@@ -97,24 +96,9 @@ export const usePullupStore = create<PullupStore>((set, get) => ({
 
   importData: (payload) => {
     const nextState = {
-      ...payload,
+      ...normalizeState(payload),
       lastSavedAt: Date.now()
     };
-    saveState(nextState);
-    set(nextState);
-  },
-
-  setSensorMode: (mode) => {
-    const state = get();
-    const nextState: AppState = {
-      ...state,
-      lastSavedAt: Date.now(),
-      settings: {
-        ...state.settings,
-        sensorMode: mode
-      }
-    };
-
     saveState(nextState);
     set(nextState);
   },

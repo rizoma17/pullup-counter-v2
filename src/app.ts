@@ -1,5 +1,3 @@
-export type SensorMode = 'manual' | 'camera';
-
 export type DailyRecord = {
   date: string;
   reps: number;
@@ -25,7 +23,6 @@ export type AppSettings = {
   dailyGoal: number;
   vibrationEnabled: boolean;
   soundEnabled: boolean;
-  sensorMode: SensorMode;
 };
 
 export type AppState = {
@@ -47,5 +44,6 @@ export type TrainingSession = {
   date: string;
   reps: number;
   createdAt: number;
+  // Keep legacy camera records readable in existing training history.
   source: 'manual' | 'import' | 'camera';
 };
