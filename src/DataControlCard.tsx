@@ -1,4 +1,5 @@
 import { useRef } from 'react';
+import { useShallow } from 'zustand/react/shallow';
 import { useToast } from './useToast';
 import { usePullupStore } from './store';
 import { downloadJson, readJsonFile } from './exportImport';
@@ -7,14 +8,14 @@ export function DataControlCard() {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const pushToast = useToast((s) => s.pushToast);
 
-  const state = usePullupStore((s) => ({
+  const state = usePullupStore(useShallow((s) => ({
     totalReps: s.totalReps,
     todayReps: s.todayReps,
     lastTrackedDate: s.lastTrackedDate,
     lastSavedAt: s.lastSavedAt,
     dailyLog: s.dailyLog,
     settings: s.settings
-  }));
+  })));
   const importData = usePullupStore((s) => s.importData);
   const resetAll = usePullupStore((s) => s.resetAll);
 
@@ -49,7 +50,8 @@ export function DataControlCard() {
         accept="application/json"
         className="hidden"
         onChange={async (e) => {
-          const file = e.target.files?.[0];
+          const input = e.currentTarget;
+          const file = input.files?.[0];
           if (!file) return;
           try {
             const payload = await readJsonFile(file);
@@ -58,7 +60,7 @@ export function DataControlCard() {
           } catch {
             pushToast({ title: '檔案格式不正確', tone: 'error' });
           }
-          e.currentTarget.value = '';
+          input.value = '';
         }}
       />
 

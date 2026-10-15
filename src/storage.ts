@@ -13,9 +13,24 @@ export function createInitialState(): AppState {
     settings: {
       dailyGoal: 30,
       vibrationEnabled: true,
-      soundEnabled: false,
-      sensorMode: 'manual'
+      soundEnabled: false
     }
+  };
+}
+
+export function normalizeState(state: Partial<AppState>): AppState {
+  const initial = createInitialState();
+
+  return {
+    ...initial,
+    ...state,
+    // Retain supported settings when loading older saved data or JSON backups.
+    settings: {
+      dailyGoal: state.settings?.dailyGoal ?? initial.settings.dailyGoal,
+      vibrationEnabled: state.settings?.vibrationEnabled ?? initial.settings.vibrationEnabled,
+      soundEnabled: state.settings?.soundEnabled ?? initial.settings.soundEnabled
+    },
+    lastSavedAt: state.lastSavedAt ?? initial.lastSavedAt
   };
 }
 
@@ -24,18 +39,7 @@ export function loadState(): AppState {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return createInitialState();
 
-    const parsed = JSON.parse(raw) as Partial<AppState>;
-    const initial = createInitialState();
-
-    return {
-      ...initial,
-      ...parsed,
-      settings: {
-        ...initial.settings,
-        ...parsed.settings
-      },
-      lastSavedAt: parsed.lastSavedAt ?? Date.now()
-    };
+    return normalizeState(JSON.parse(raw) as Partial<AppState>);
   } catch {
     return createInitialState();
   }

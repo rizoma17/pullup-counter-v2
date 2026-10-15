@@ -33,7 +33,7 @@ export async function addSession(session: TrainingSession): Promise<void> {
   db.close();
 }
 
-export async function getRecentSessions(limit = 20): Promise<TrainingSession[]> {
+export async function getSessions(): Promise<TrainingSession[]> {
   const db = await openDb();
   const rows = await new Promise<TrainingSession[]>((resolve, reject) => {
     const tx = db.transaction(STORE_NAME, 'readonly');
@@ -44,7 +44,7 @@ export async function getRecentSessions(limit = 20): Promise<TrainingSession[]> 
     request.onerror = () => reject(request.error);
   });
   db.close();
-  return rows.sort((a, b) => b.createdAt - a.createdAt).slice(0, limit);
+  return rows.sort((a, b) => b.createdAt - a.createdAt);
 }
 
 export async function clearSessions(): Promise<void> {

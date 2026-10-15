@@ -5,12 +5,10 @@ export function SettingsPanel() {
   const dailyGoal = usePullupStore((s) => s.settings.dailyGoal);
   const vibrationEnabled = usePullupStore((s) => s.settings.vibrationEnabled);
   const soundEnabled = usePullupStore((s) => s.settings.soundEnabled);
-  const sensorMode = usePullupStore((s) => s.settings.sensorMode);
 
   const setDailyGoal = usePullupStore((s) => s.setDailyGoal);
   const setVibrationEnabled = usePullupStore((s) => s.setVibrationEnabled);
   const setSoundEnabled = usePullupStore((s) => s.setSoundEnabled);
-  const setSensorMode = usePullupStore((s) => s.setSensorMode);
   const pushToast = useToast((s) => s.pushToast);
 
   return (
@@ -75,26 +73,6 @@ export function SettingsPanel() {
         </button>
       </div>
 
-      <div>
-        <label className="mb-2 block text-sm text-slate-600">輸入模式</label>
-        <div className="grid grid-cols-2 gap-2">
-          {['manual', 'camera'].map((mode) => (
-            <button
-              key={mode}
-              type="button"
-              onClick={() => {
-                setSensorMode(mode as 'manual' | 'camera');
-                pushToast({ title: `目前模式：${mode === 'manual' ? '手動' : '相機'}`, tone: 'success' });
-              }}
-              className={`h-12 rounded-2xl text-sm font-medium ${
-                sensorMode === mode ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-600'
-              }`}
-            >
-              {mode === 'manual' ? '手動' : '相機'}
-            </button>
-          ))}
-        </div>
-      </div>
     </div>
   );
 }
