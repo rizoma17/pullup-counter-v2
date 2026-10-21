@@ -9,9 +9,6 @@ import { RecentTrainingCard } from './RecentTrainingCard';
 import { useDayRollover } from './useDayRollover';
 import { ToastViewport } from './ToastViewport';
 import { GroupedSessionHistoryCard } from './GroupedSessionHistoryCard';
-import { DataControlCard } from './DataControlCard';
-import { InstallPromptCard } from './InstallPromptCard';
-import { SettingsPanel } from './SettingsPanel';
 import { BottomActionBar } from './BottomActionBar';
 import { KPICard } from './KPICard';
 import { getAchievements } from './achievementRules';
@@ -39,7 +36,7 @@ export default function App() {
   const lastSavedAt = usePullupStore((s) => s.lastSavedAt);
   const addReps = usePullupStore((s) => s.addReps);
   const pushToast = useToast((s) => s.pushToast);
-  const [tab, setTab] = useState<'counter' | 'analytics' | 'awards' | 'settings'>('counter');
+  const [tab, setTab] = useState<'counter' | 'analytics' | 'awards' | 'intensity'>('counter');
 
   const weeklyData = useMemo(() => getWeeklyChartData(dailyLog), [dailyLog, currentDate]);
   const weeklyTotal = weeklyData.reduce((sum, item) => sum + item.reps, 0);
@@ -62,7 +59,7 @@ export default function App() {
             ['counter', '計數'],
             ['analytics', '分析'],
             ['awards', '成就'],
-            ['settings', '設定']
+            ['intensity', '訓練強度']
           ].map(([item, label]) => (
             <button
               key={item}
@@ -100,17 +97,10 @@ export default function App() {
             </div>
             <GroupedSessionHistoryCard />
             <WeeklyTrendChart data={weeklyData} />
-            <StreakHeatmap dailyLog={dailyLog} days={28} />
           </div>
         )}
         {tab === 'awards' && <AchievementGrid achievements={achievements} />}
-        {tab === 'settings' && (
-          <div className="space-y-4">
-            <SettingsPanel />
-            <InstallPromptCard />
-            <DataControlCard />
-          </div>
-        )}
+        {tab === 'intensity' && <StreakHeatmap dailyLog={dailyLog} today={currentDate} />}
       </div>
 
       {tab !== 'counter' && <BottomActionBar
