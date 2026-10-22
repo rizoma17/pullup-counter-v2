@@ -1,10 +1,14 @@
 import type { LevelInfo } from './app';
 
+export const REPS_PER_LEVEL = 200;
+const LEVEL_LABELS: LevelInfo['label'][] = ['新手', '入門', '進階', '高手', '猛者', '菁英'];
+
 export function getLevel(totalReps: number): LevelInfo {
-  if (totalReps >= 1500) return { label: '菁英', stage: 5 };
-  if (totalReps >= 800) return { label: '猛者', stage: 4 };
-  if (totalReps >= 400) return { label: '高手', stage: 3 };
-  if (totalReps >= 150) return { label: '進階', stage: 2 };
-  if (totalReps >= 50) return { label: '入門', stage: 1 };
-  return { label: '新手', stage: 0 };
+  const stage = Math.floor(Math.max(0, totalReps) / REPS_PER_LEVEL);
+  return { label: LEVEL_LABELS[Math.min(stage, LEVEL_LABELS.length - 1)], stage };
+}
+
+export function getLevelProgress(totalReps: number) {
+  const progressReps = Math.max(0, totalReps) % REPS_PER_LEVEL;
+  return { percent: progressReps / REPS_PER_LEVEL * 100, remaining: REPS_PER_LEVEL - progressReps };
 }
