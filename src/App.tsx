@@ -36,7 +36,7 @@ export default function App() {
   const lastSavedAt = usePullupStore((s) => s.lastSavedAt);
   const addReps = usePullupStore((s) => s.addReps);
   const pushToast = useToast((s) => s.pushToast);
-  const [tab, setTab] = useState<'counter' | 'analytics' | 'awards' | 'intensity'>('counter');
+  const [tab, setTab] = useState<'counter' | 'analytics' | 'awards' | 'weekly' | 'intensity'>('counter');
 
   const weeklyData = useMemo(() => getWeeklyChartData(dailyLog), [dailyLog, currentDate]);
   const weeklyTotal = weeklyData.reduce((sum, item) => sum + item.reps, 0);
@@ -54,18 +54,20 @@ export default function App() {
           <span className="flex items-center gap-1 text-xs text-emerald-700"><CheckCircle2 className="h-3 w-3" />已儲存 {formatSavedTime(lastSavedAt)}</span>
         </header>
 
-        <div className="grid h-12 grid-cols-4 rounded-2xl bg-white p-1 shadow-soft">
+        <div className="grid min-h-14 grid-cols-5 rounded-2xl bg-white p-1 shadow-soft">
           {[
             ['counter', '計數'],
             ['analytics', '分析'],
             ['awards', '成就'],
+            ['weekly', '每週趨勢'],
             ['intensity', '訓練強度']
           ].map(([item, label]) => (
             <button
               key={item}
               type="button"
               onClick={() => setTab(item as typeof tab)}
-              className={`rounded-2xl text-xs font-medium ${tab === item ? 'bg-slate-900 text-white' : 'text-slate-500'}`}
+              aria-pressed={tab === item}
+              className={`min-h-11 whitespace-nowrap rounded-2xl text-xs font-medium ${tab === item ? 'bg-slate-900 text-white' : 'text-slate-500'}`}
             >
               {label}
             </button>
@@ -96,10 +98,10 @@ export default function App() {
               <KPICard icon={<Activity className="h-5 w-5" />} title="本週" value={weeklyTotal} hint="近 7 天總和" />
             </div>
             <GroupedSessionHistoryCard />
-            <WeeklyTrendChart data={weeklyData} />
           </div>
         )}
         {tab === 'awards' && <AchievementGrid achievements={achievements} />}
+        {tab === 'weekly' && <WeeklyTrendChart data={weeklyData} />}
         {tab === 'intensity' && <StreakHeatmap dailyLog={dailyLog} today={currentDate} />}
       </div>
 
