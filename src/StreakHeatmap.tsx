@@ -4,7 +4,7 @@ import { formatDate } from './dates';
 type Props = { dailyLog: Record<string, { reps: number }>; today: string };
 
 function getIntensity(reps: number) {
-  if (reps >= 30) return 'bg-slate-900 text-white';
+  if (reps >= 30) return 'bg-orange-700 text-white';
   if (reps >= 15) return 'bg-slate-700 text-white';
   if (reps >= 1) return 'bg-slate-400 text-white';
   return 'bg-slate-100 text-slate-600';
@@ -21,7 +21,7 @@ export function StreakHeatmap({ dailyLog, today }: Props) {
         <h2 className="text-lg font-semibold">訓練強度</h2>
         <p className="text-xs text-slate-500">本月與前 2 個月</p>
       </div>
-      <p className="mt-1 text-xs text-slate-500">依每日總次數顯示深淺，點選日期查看紀錄。</p>
+      <p className="mt-1 text-xs text-slate-500">依每日總次數顯示顏色，30 下以上以橘色標示。點選日期查看紀錄。</p>
       <div className="mt-3 rounded-2xl bg-slate-50 p-3 text-sm" aria-live="polite" aria-atomic="true">
         {selectedDate.replace(/-/g, '/')} · <strong>{dailyLog[selectedDate]?.reps ?? 0} 下</strong>
       </div>
