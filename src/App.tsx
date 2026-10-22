@@ -1,5 +1,6 @@
 import { Activity, Dumbbell, Flame, Trophy, CheckCircle2, RotateCcw } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
+import type { TouchEvent } from 'react';
 import { AvatarEvolution } from './AvatarEvolution';
 import { WeeklyTrendChart } from './WeeklyTrendChart';
 import { StreakHeatmap } from './StreakHeatmap';
@@ -17,6 +18,16 @@ import { usePullupStore } from './store';
 import { getStreak } from './dates';
 import { getLevel } from './level';
 import { useToast } from './useToast';
+
+const TABS = [
+  ['counter', '計數'],
+  ['analytics', '分析'],
+  ['awards', '成就'],
+  ['weekly', '每週趨勢'],
+  ['intensity', '訓練強度']
+] as const;
+type Tab = typeof TABS[number][0];
+const SWIPE_EXCLUDED = 'button, input, select, textarea, a, summary, [role="button"], [contenteditable], .recharts-wrapper, [data-no-swipe]';
 
 function formatSavedTime(timestamp: number) {
   return new Date(timestamp).toLocaleTimeString('zh-TW', {
@@ -36,7 +47,46 @@ export default function App() {
   const lastSavedAt = usePullupStore((s) => s.lastSavedAt);
   const addReps = usePullupStore((s) => s.addReps);
   const pushToast = useToast((s) => s.pushToast);
-  const [tab, setTab] = useState<'counter' | 'analytics' | 'awards' | 'weekly' | 'intensity'>('counter');
+  const [tab, setTab] = useState<Tab>('counter');
+  const swipe = useRef<{ id: number; x: number; y: number; time: number } | null>(null);
+
+  function startSwipe(event: TouchEvent<HTMLDivElement>) {
+    swipe.current = null;
+    if (event.touches.length !== 1 || (event.target instanceof Element && event.target.closest(SWIPE_EXCLUDED))) return;
+    const touch = event.touches[0];
+    // Leave screen-edge gestures to the browser's back/forward navigation.
+    if (touch.clientX < 24 || touch.clientX > window.innerWidth - 24) return;
+    swipe.current = { id: touch.identifier, x: touch.clientX, y: touch.clientY, time: Date.now() };
+  }
+
+  function moveSwipe(event: TouchEvent<HTMLDivElement>) {
+    const start = swipe.current;
+    if (!start) return;
+    const touch = event.touches[0];
+    if (event.touches.length !== 1 || touch.identifier !== start.id) {
+      swipe.current = null;
+      return;
+    }
+    const dx = Math.abs(touch.clientX - start.x);
+    const dy = Math.abs(touch.clientY - start.y);
+    // Once a gesture becomes a vertical scroll, it cannot become a tab swipe.
+    if (dy > 48 || (dy > 12 && dy >= dx)) swipe.current = null;
+  }
+
+  function endSwipe(event: TouchEvent<HTMLDivElement>) {
+    const start = swipe.current;
+    swipe.current = null;
+    if (!start || event.touches.length !== 0) return;
+    const touch = Array.from(event.changedTouches).find((item) => item.identifier === start.id);
+    if (!touch) return;
+    const dx = touch.clientX - start.x;
+    const dy = Math.abs(touch.clientY - start.y);
+    if (Date.now() - start.time > 900 || Math.abs(dx) < 60 || dy > 48 || Math.abs(dx) < dy * 1.6) return;
+    const nextIndex = TABS.findIndex(([key]) => key === tab) + (dx < 0 ? 1 : -1);
+    if (nextIndex < 0 || nextIndex >= TABS.length) return;
+    setTab(TABS[nextIndex][0]);
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }
 
   const weeklyData = useMemo(() => getWeeklyChartData(dailyLog), [dailyLog, currentDate]);
   const weeklyTotal = weeklyData.reduce((sum, item) => sum + item.reps, 0);
@@ -45,7 +95,9 @@ export default function App() {
   const achievements = getAchievements(totalReps, streak, weeklyTotal);
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900">
+    <div className="min-h-screen bg-slate-50 text-slate-900"
+      onTouchStart={startSwipe} onTouchMove={moveSwipe} onTouchEnd={endSwipe}
+      onTouchCancel={() => { swipe.current = null; }}>
       <ToastViewport />
 
       <div className="mx-auto max-w-md space-y-3 px-4 pb-28 pt-4">
@@ -55,17 +107,11 @@ export default function App() {
         </header>
 
         <div className="grid min-h-14 grid-cols-5 rounded-2xl bg-white p-1 shadow-soft">
-          {[
-            ['counter', '計數'],
-            ['analytics', '分析'],
-            ['awards', '成就'],
-            ['weekly', '每週趨勢'],
-            ['intensity', '訓練強度']
-          ].map(([item, label]) => (
+          {TABS.map(([item, label]) => (
             <button
               key={item}
               type="button"
-              onClick={() => setTab(item as typeof tab)}
+              onClick={() => { swipe.current = null; setTab(item); }}
               aria-pressed={tab === item}
               className={`min-h-11 whitespace-nowrap rounded-2xl text-xs font-medium ${tab === item ? 'bg-slate-900 text-white' : 'text-slate-500'}`}
             >
