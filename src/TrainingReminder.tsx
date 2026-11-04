@@ -12,6 +12,7 @@ type ReminderState = {
   frequency: Frequency;
   window: WindowChoice;
   planDate: string;
+  planVersion: number;
   planTimes: number[];
   delivered: number[];
   restDate: string | null;
@@ -23,6 +24,7 @@ const DEFAULTS: ReminderState = {
   frequency: 2,
   window: 'day',
   planDate: '',
+  planVersion: 2,
   planTimes: [],
   delivered: [],
   restDate: null
@@ -42,8 +44,9 @@ function readReminder(): ReminderState {
     return {
       enabled: value.enabled === true,
       frequency: value.frequency === 1 ? 1 : 2,
-      window: value.window === 'evening' ? 'evening' : 'day',
-      planDate: typeof value.planDate === 'string' ? value.planDate : '',
+      window: 'day',
+      planDate: value.planVersion === 2 && typeof value.planDate === 'string' ? value.planDate : '',
+      planVersion: 2,
       planTimes: Array.isArray(value.planTimes) ? value.planTimes.filter((v): v is number => typeof v === 'number' && Number.isFinite(v)) : [],
       delivered: Array.isArray(value.delivered) ? value.delivered.filter((v): v is number => typeof v === 'number' && Number.isFinite(v)) : [],
       restDate: typeof value.restDate === 'string' ? value.restDate : null
@@ -56,8 +59,8 @@ function readReminder(): ReminderState {
 function buildPlan(state: ReminderState, now: Date): ReminderState {
   const date = formatDate(now);
   if (state.planDate === date) return state;
-  const startHour = state.window === 'evening' ? 17 : 12;
-  const endHour = state.window === 'evening' ? 22 : 21;
+  const startHour = 10;
+  const endHour = 16;
   const begin = new Date(now);
   begin.setHours(startHour, 0, 0, 0);
   const end = new Date(now);
@@ -111,8 +114,8 @@ export function TrainingReminder({ todayReps }: { todayReps: number }) {
     }
   }
 
-  function updateConfig(changes: Partial<Pick<ReminderState, 'enabled' | 'frequency' | 'window'>>) {
-    commit({ ...dataRef.current, ...changes, planDate: '', planTimes: [], delivered: [] });
+  function updateConfig(changes: Partial<Pick<ReminderState, 'enabled' | 'frequency'>>) {
+    commit({ ...dataRef.current, ...changes, window: 'day', planDate: '', planVersion: 2, planTimes: [], delivered: [] });
   }
 
   useEffect(() => {
@@ -132,7 +135,7 @@ export function TrainingReminder({ todayReps }: { todayReps: number }) {
       const overdue = current.planTimes.filter((time) => time <= now.getTime() && !current.delivered.includes(time));
       if (!overdue.length) return;
 
-      const endHour = current.window === 'evening' ? 22 : 21;
+      const endHour = 16;
       if (now.getHours() >= endHour) {
         commit({ ...current, delivered: [...current.delivered, ...overdue] });
         return;
@@ -235,13 +238,9 @@ export function TrainingReminder({ todayReps }: { todayReps: number }) {
                   <option value={2}>每天最多 2 次</option>
                 </select>
               </label>
-              <label className="text-sm font-medium text-slate-700">隨機時段
-                <select value={state.window} onChange={(event) => updateConfig({ window: event.target.value === 'evening' ? 'evening' : 'day' })}
-                  className="mt-2 h-11 w-full rounded-xl border border-slate-200 bg-white px-3">
-                  <option value="day">12:00–21:00</option>
-                  <option value="evening">17:00–22:00</option>
-                </select>
-              </label>
+              <div className="text-sm font-medium text-slate-700">提醒時段
+                <div className="mt-2 flex min-h-11 items-center rounded-xl border border-slate-200 bg-slate-50 px-3 text-sm font-semibold text-slate-800">10:00–16:00</div>
+              </div>
             </div>
 
             <div className="mt-4 flex items-center justify-between rounded-xl border border-slate-200 px-3 py-3">
@@ -259,7 +258,7 @@ export function TrainingReminder({ todayReps }: { todayReps: number }) {
           <BackgroundPushControl enabled={state.enabled} todayReps={todayReps} restDate={state.restDate} windowChoice={state.window} />
 
           <div className="mt-4 rounded-xl border border-sky-100 bg-sky-50 p-3 text-xs leading-5 text-sky-900">
-            網頁開啟時可以不定時提醒；背景推播須另外按「啟用背景推播」並允許通知，目前會在每日晚間檢查是否訓練。
+            網頁持續執行時，會在每天 10:00–16:00 之間隨機提醒；背景推播須另外啟用，目前每天約 13:00–14:00 檢查一次。
           </div>
 
           <div className="mt-4 flex flex-wrap gap-2">
