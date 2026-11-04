@@ -2,6 +2,7 @@ import { Bell, BellOff, CheckCircle2, Clock3, Moon, X } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { formatDate } from './dates';
 import { useToast } from './useToast';
+import { BackgroundPushControl } from './BackgroundPushControl';
 
 type WindowChoice = 'day' | 'evening';
 type Frequency = 1 | 2;
@@ -255,8 +256,10 @@ export function TrainingReminder({ todayReps }: { todayReps: number }) {
             </div>
           </>}
 
+          <BackgroundPushControl enabled={state.enabled} todayReps={todayReps} restDate={state.restDate} windowChoice={state.window} />
+
           <div className="mt-4 rounded-xl border border-sky-100 bg-sky-50 p-3 text-xs leading-5 text-sky-900">
-            本版會在網頁開啟、仍持續執行時依隨機時間提醒；關閉網頁後無法保證發送系統通知。真正的背景推播需要另外建立推播服務。
+            網頁開啟時可以不定時提醒；背景推播須另外按「啟用背景推播」並允許通知，目前會在每日晚間檢查是否訓練。
           </div>
 
           <div className="mt-4 flex flex-wrap gap-2">
