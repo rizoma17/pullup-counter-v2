@@ -69,6 +69,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       if (!existing) return res.status(404).json({ error: 'Subscription not found' });
       const next: Stored = {
         ...existing,
+        enabled: body.enabled !== false,
         date: typeof body.date === 'string' ? body.date.slice(0, 10) : existing.date,
         reps: Math.max(0, Number(body.reps) || 0),
         restDate: typeof body.restDate === 'string' ? body.restDate.slice(0, 10) : null,
