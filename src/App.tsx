@@ -18,6 +18,7 @@ import { usePullupStore } from './store';
 import { getStreak } from './dates';
 import { getLevel } from './level';
 import { useToast } from './useToast';
+import { TrainingReminder } from './TrainingReminder';
 
 const TABS = [
   ['counter', '計數'],
@@ -103,7 +104,7 @@ export default function App() {
       <div className="mx-auto max-w-md space-y-3 px-4 pb-28 pt-4">
         <header className="flex items-center justify-between">
           <h1 className="text-xl font-bold tracking-tight">引體向上計數器</h1>
-          <span className="flex items-center gap-1 text-xs text-emerald-700"><CheckCircle2 className="h-3 w-3" />已儲存 {formatSavedTime(lastSavedAt)}</span>
+          <div className="flex items-center gap-2"><span className="flex items-center gap-1 text-xs text-emerald-700"><CheckCircle2 className="h-3 w-3" />已儲存 {formatSavedTime(lastSavedAt)}</span><TrainingReminder todayReps={todayReps} /></div>
         </header>
 
         <div className="grid min-h-14 grid-cols-5 rounded-2xl bg-white p-1 shadow-soft">
