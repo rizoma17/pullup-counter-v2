@@ -59,8 +59,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           // The device must have synced recently, otherwise training status is uncertain.
           if (!device.updatedAt || Date.now() - device.updatedAt > 7 * 86400000) continue;
           const digest = createHash('sha256').update(device.id + ':' + date).digest();
-          // Vary the days on which a reminder arrives, to avoid a repetitive fixed alert.
-          if (digest[0] >= 230) continue;
           const index = digest[1] % sentences.length;
           await webpush.sendNotification(device.subscription, JSON.stringify({
             title: '引體向上 · 訓練提醒',
