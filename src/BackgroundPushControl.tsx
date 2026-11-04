@@ -112,7 +112,7 @@ export function BackgroundPushControl({ enabled, todayReps, restDate, windowChoi
     <div className="text-sm font-semibold text-indigo-950">關閉網頁後仍可收到推播</div>
     <p className="mt-1 text-xs leading-5 text-indigo-800">
       iPhone 請先用 Safari「分享 → 加入主畫面」，再從主畫面開啟本程式。
-      啟用後每日約 20:00 檢查當天紀錄，未訓練才可能收到提醒；此時段目前不是隨機的。
+      啟用後每日約 13:00–14:00（台灣時間）檢查當天紀錄，未訓練才可能收到提醒；背景推播目前不是隨機的。
     </p>
     {!installed && <p className="mt-2 text-xs font-semibold text-amber-800">
       若使用 iPhone，請先加入主畫面並從主畫面開啟，才能允許推播。
