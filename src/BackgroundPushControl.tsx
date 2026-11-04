@@ -40,7 +40,7 @@ export function BackgroundPushControl({ enabled, todayReps, restDate, windowChoi
 
   useEffect(() => {
     if (!subscribed) return;
-    const payload = { date: formatDate(new Date()), reps: todayReps, restDate, window: windowChoice };
+    const payload = { enabled, date: formatDate(new Date()), reps: todayReps, restDate, window: windowChoice };
     let cancelled = false;
     const sync = () => {
       if (cancelled) return;
@@ -58,7 +58,7 @@ export function BackgroundPushControl({ enabled, todayReps, restDate, windowChoi
       window.removeEventListener('online', sync);
       document.removeEventListener('visibilitychange', sync);
     };
-  }, [subscribed, todayReps, restDate, windowChoice]);
+  }, [subscribed, enabled, todayReps, restDate, windowChoice]);
 
   async function activate() {
     setBusy(true);
