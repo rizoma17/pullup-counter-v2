@@ -50,6 +50,7 @@ export default function App() {
   const pushToast = useToast((s) => s.pushToast);
   const [tab, setTab] = useState<Tab>('counter');
   const swipe = useRef<{ id: number; x: number; y: number; time: number } | null>(null);
+  const contentRef = useRef<HTMLElement | null>(null);
 
   function startSwipe(event: TouchEvent<HTMLDivElement>) {
     swipe.current = null;
@@ -86,7 +87,7 @@ export default function App() {
     const nextIndex = TABS.findIndex(([key]) => key === tab) + (dx < 0 ? 1 : -1);
     if (nextIndex < 0 || nextIndex >= TABS.length) return;
     setTab(TABS[nextIndex][0]);
-    window.scrollTo({ top: 0, behavior: 'instant' });
+    contentRef.current?.scrollTo({ top: 0, behavior: 'instant' });
   }
 
   const weeklyData = useMemo(() => getWeeklyChartData(dailyLog), [dailyLog, currentDate]);
@@ -96,12 +97,12 @@ export default function App() {
   const achievements = getAchievements(totalReps, streak, weeklyTotal);
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900"
+    <div className="flex h-[100dvh] flex-col overflow-hidden bg-slate-50 text-slate-900"
       onTouchStart={startSwipe} onTouchMove={moveSwipe} onTouchEnd={endSwipe}
       onTouchCancel={() => { swipe.current = null; }}>
       <ToastViewport />
 
-      <div className="mx-auto max-w-md space-y-3 px-4 pb-28 pt-4">
+      <main ref={contentRef} className="mx-auto min-h-0 w-full max-w-md flex-1 space-y-3 overflow-y-auto overscroll-y-contain px-4 pb-6 pt-4">
         <header className="flex items-center justify-between">
           <h1 className="text-xl font-bold tracking-tight">引體向上計數器</h1>
           <div className="flex items-center gap-2"><span className="flex items-center gap-1 text-xs text-emerald-700"><CheckCircle2 className="h-3 w-3" />已儲存 {formatSavedTime(lastSavedAt)}</span><TrainingReminder todayReps={todayReps} /></div>
@@ -112,7 +113,7 @@ export default function App() {
             <button
               key={item}
               type="button"
-              onClick={() => { swipe.current = null; setTab(item); }}
+              onClick={() => { swipe.current = null; setTab(item); contentRef.current?.scrollTo({ top: 0, behavior: 'instant' }); }}
               aria-pressed={tab === item}
               className={`min-h-11 whitespace-nowrap rounded-2xl text-xs font-medium ${tab === item ? 'bg-slate-900 text-white' : 'text-slate-500'}`}
             >
@@ -134,7 +135,7 @@ export default function App() {
             <div className="h-2 overflow-hidden rounded-full bg-slate-100"><div className="h-full rounded-full bg-blue-500 transition-all" style={{ width: `${Math.min(100, todayReps / Math.max(1, dailyGoal) * 100)}%` }} /></div>
           </section>
           <CounterPanel />
-          <RecentTrainingCard onViewAll={() => setTab('analytics')} />
+          <RecentTrainingCard onViewAll={() => { setTab('analytics'); contentRef.current?.scrollTo({ top: 0, behavior: 'instant' }); }} />
         </>}
         {tab === 'analytics' && (
           <div className="space-y-4">
@@ -150,7 +151,7 @@ export default function App() {
         {tab === 'awards' && <AchievementGrid achievements={achievements} />}
         {tab === 'weekly' && <WeeklyTrendChart data={weeklyData} />}
         {tab === 'intensity' && <StreakHeatmap dailyLog={dailyLog} today={currentDate} />}
-      </div>
+      </main>
 
       {tab !== 'counter' && <BottomActionBar
         levelLabel={level.label}
